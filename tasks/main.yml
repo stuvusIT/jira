@@ -1,0 +1,106 @@
+---
+- name: Create a unix group
+  group:
+    name: jira
+    system: true
+
+- name: Create a unix user
+  user:
+    name: jira
+    group: jira
+    comment: JIRA system user
+    shell: /bin/false
+    home: /opt/atlassian-jira
+    createhome: no
+    system: true
+
+- name: Create installation directory
+  file:
+    path: /opt/atlassian-jira
+    state: directory
+    owner: root
+    group: jira
+    mode: 0755
+
+- name: Create data directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: jira
+    mode: 0770
+  with_items:
+    - /var/lib/jira
+    - /var/log/jira
+
+- name: Download archive
+  get_url:
+    url: https://www.atlassian.com/software/jira/downloads/binary/atlassian-jira-core-{{ jira_version }}.tar.gz
+    dest: /opt/.jira-{{ jira_version }}.tar.gz
+    owner: root
+    group: root
+    mode: 0644
+  register: download
+
+- name: Extract archive
+  unarchive:
+    src: /opt/.jira-{{ jira_version }}.tar.gz
+    dest: /opt/atlassian-jira/
+    extra_opts: [ --strip-components=1 ] # This strips away the main directory in the archive
+    owner: root
+    group: root
+    mode: 0755
+    remote_src: true
+  when: download.changed
+
+- name: Create server.xml
+  template:
+    src: server.xml.j2
+    dest: /opt/atlassian-jira/conf/server.xml
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Symlink logs directory
+  file:
+    path: /opt/atlassian-jira/logs
+    state: link
+    src: /var/log/jira
+    force: true
+    owner: root
+    group: jira
+
+- name: Grant write privileges
+  file:
+    path: /opt/atlassian-jira/{{ item }}
+    mode: 0775
+  with_items:
+    - temp
+    - webapps
+    - work
+
+- name: Set home directory
+  copy:
+    dest: /opt/atlassian-jira/atlassian-jira/WEB-INF/classes/jira-application.properties
+    content: "# {{ ansible_managed }}\njira.home=/var/lib/jira\n"
+
+- name: Set Java options
+  copy:
+    dest: /etc/default/jira
+    content: "# {{ ansible_managed }}\nJAVA_OPTS='{{ jira_java_opts }}'\n"
+
+- name: Create systemd unit
+  template:
+    src: jira.service.j2
+    dest: /etc/systemd/system/jira.service
+    owner: root
+    group: root
+    mode: 0644
+  register: unit
+
+- name: Enable and start
+  systemd:
+    name: jira.service
+    state: started
+    enabled: true
+    daemon_reload: "{{ unit.changed }}"
