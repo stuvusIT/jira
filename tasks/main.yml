@@ -82,12 +82,12 @@
 - name: Set home directory
   copy:
     dest: /opt/atlassian-jira/atlassian-jira/WEB-INF/classes/jira-application.properties
-    content: "# {{ ansible_managed }}\njira.home=/var/lib/jira\n"
+    content: "# Ansible managed - do not edit here!\njira.home=/var/lib/jira\n"
 
 - name: Set Java options
   copy:
     dest: /etc/default/jira
-    content: "# {{ ansible_managed }}\nJAVA_OPTS='{{ jira_java_opts }}'\n"
+    content: "# Ansible managed - do not edit here!\nJAVA_OPTS='{{ jira_java_opts }}'\n"
 
 - name: Create systemd unit
   template:
