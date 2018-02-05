@@ -73,8 +73,11 @@
 - name: Grant write privileges
   file:
     path: /opt/atlassian-jira/{{ item }}
+    owner: root
+    group: jira
     mode: 0775
   with_items:
+    - conf
     - temp
     - webapps
     - work
