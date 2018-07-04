@@ -1,0 +1,26 @@
+---
+- name: Create PostgreSQL user
+  postgresql_user:
+    name: "{{ jira_postgres_user }}"
+    no_password_changes: true
+    role_attr_flags: LOGIN
+    # Connection to postgres
+    login_host: "{{ jira_postgres_login_host }}"
+    login_user: "{{ jira_postgres_login_user }}"
+    login_password: "{{ jira_postgres_login_password | default(omit) }}"
+
+- name: Create PostgreSQL database
+  postgresql_db:
+    name: "{{ jira_postgres_database }}"
+    owner: "{{ jira_postgres_user }}"
+    # Connection to postgres
+    login_host: "{{ jira_postgres_login_host }}"
+    login_user: "{{ jira_postgres_login_user }}"
+    login_password: "{{ jira_postgres_login_password | default(omit) }}"
+
+- name: Grant privileges to PostgreSQL database
+  postgresql_privs:
+    db: "{{ jira_postgres_database }}"
+    role: "{{ jira_postgres_user }}"
+    objs: ALL_IN_SCHEMA
+    privs: ALL

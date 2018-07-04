@@ -9,3 +9,9 @@ jira_connector_min_spare_threads: 25
 jira_connector_connection_timeout: 20000
 jira_connector_max_http_header_size: 8192
 jira_connector_accept_count: 100
+
+jira_configure_postgres: true
+jira_postgres_login_host: localhost
+jira_postgres_login_user: postgres
+jira_postgres_user: jira
+jira_postgres_database: jira
