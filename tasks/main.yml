@@ -92,6 +92,9 @@
     dest: /etc/default/jira
     content: "# Ansible managed - do not edit here!\nJAVA_OPTS='{{ jira_java_opts }}'\n"
 
+- include_tasks: postgresql.yml
+  when: jira_configure_postgres
+
 - name: Create systemd unit
   template:
     src: jira.service.j2

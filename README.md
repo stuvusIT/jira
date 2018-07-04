@@ -22,7 +22,14 @@ Ubuntu and an [Oracle JVM (JIRA 7 needs at least Version 8)](https://github.com/
 | `jira_connector_connection_timeout`   | `20000`                      | Timeout to wait for requests                                                                                                                   |
 | `jira_connector_max_http_header_size` | `8192`                       | Maximum header size for requests                                                                                                               |
 | `jira_connector_accept_count`         | `100`                        | Maximum concurrent `accept` syscalls for listening                                                                                             |
-| `jira_proxy_name`                     | ` `                          | Name of the proxy to run JIRA behind. This role assumes you use a proxy which offers JIRA with TLS. Unencrypted connections are not supported. |
+| `jira_proxy_name`                     |                              | Name of the proxy to run JIRA behind. This role assumes you use a proxy which offers JIRA with TLS. Unencrypted connections are not supported. |
+| `jira_configure_postgres`             | `true`                       | Whether to configure a PostgreSQL user and database                                                                                            |
+| `jira_postgres_login_host`            | `localhost`                  | Host to connect to for setting up PostgreSQL                                                                                                   |
+| `jira_postgres_login_user`            | `postgres`                   | User to connect with for setting up PostgreSQL                                                                                                 |
+| `jira_postgres_login_password`        |                              | Password to connect with for setting up PostgreSQL                                                                                             |
+| `jira_postgres_user`                  | `jira`                       | Name of the PostgreSQL user to create                                                                                                          |
+| `jira_postgres_database`              | `jira`                       | Name of the PostgreSQL database to create                                                                                                      |
+
 
 ## Example Playbook
 
