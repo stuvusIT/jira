@@ -10,6 +10,8 @@
   <Service name="Catalina">
     <Connector
       port="{{ jira_connector_port }}"
+      relaxedPathChars="[]|"
+      relaxedQueryChars="[]|{}^&#x5c;&#x60;&quot;&lt;&gt;"
 
       maxThreads="{{ jira_connector_max_threads }}"
       minSpareThreads="{{ jira_connector_min_spare_threads }}"
