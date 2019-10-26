@@ -102,6 +102,7 @@
     owner: root
     group: root
     mode: 0644
+    validate: systemd-analyze verify %s
   register: unit
 
 - name: Enable and start
