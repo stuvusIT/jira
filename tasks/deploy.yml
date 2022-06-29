@@ -1,0 +1,35 @@
+---
+- name: Download Jira archive
+  get_url:
+    url: https://www.atlassian.com/software/jira/downloads/binary/atlassian-jira-core-{{ jira_version }}.tar.gz
+    dest: "{{ global_cache_dir }}/jira-{{ jira_version }}.tar.gz"
+  become: false
+  delegate_to: localhost
+
+- name: Clear unarchive target directory
+  file:
+    path: /opt/atlassian-jira-tmp
+    state: absent
+
+- name: Create unarchive target directory
+  file:
+    path: /opt/atlassian-jira-tmp
+    state: directory
+
+- name: Unpack Jira archive
+  unarchive:
+    src: "{{ global_cache_dir }}/jira-{{ jira_version }}.tar.gz"
+    dest: /opt/atlassian-jira-tmp
+    owner: root
+    group: root
+    mode: 0755
+
+# `mv` on the same filesystem is atomic. This makes sure that the destination only exists when the
+# archive was completely unpacked (i.e. the unpacking was not interrupted).
+- name: Move Jira directory into place
+  command: "mv /opt/atlassian-jira-tmp/atlassian-jira-core-{{ jira_version }}-standalone /opt/atlassian-jira-{{ jira_version }}"
+
+- name: Clear unarchive target directory
+  file:
+    path: /opt/atlassian-jira-tmp
+    state: absent

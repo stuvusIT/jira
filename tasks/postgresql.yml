@@ -8,6 +8,8 @@
     login_host: "{{ jira_postgres_login_host }}"
     login_user: "{{ jira_postgres_login_user }}"
     login_password: "{{ jira_postgres_login_password | default(omit) }}"
+  notify: Restart jira service
+
 
 - name: Create PostgreSQL database
   postgresql_db:
@@ -17,6 +19,8 @@
     login_host: "{{ jira_postgres_login_host }}"
     login_user: "{{ jira_postgres_login_user }}"
     login_password: "{{ jira_postgres_login_password | default(omit) }}"
+  notify: Restart jira service
+
 
 - name: Grant privileges to PostgreSQL database
   postgresql_privs:
@@ -24,3 +28,5 @@
     role: "{{ jira_postgres_user }}"
     objs: ALL_IN_SCHEMA
     privs: ALL
+  notify: Restart jira service
+
