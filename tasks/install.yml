@@ -1,0 +1,16 @@
+
+---
+- name: Check if the desired Jira version exists
+  stat:
+    path: /opt/atlassian-jira-{{ jira_version }}
+  register: jira_install_dir_stat
+
+- include_tasks: deploy.yml
+  when: not jira_install_dir_stat.stat.exists
+
+- name: Install Jira
+  file:
+    path: /opt/atlassian-jira
+    state: link
+    src: /opt/atlassian-jira-{{ jira_version }}
+  notify: Restart jira service
